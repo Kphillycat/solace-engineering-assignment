@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState } from "react";
 
-// Advocate type
-interface Advocate {
+type Advocate = {
   id?: string | number;
   firstName: string;
   lastName: string;
@@ -79,7 +78,7 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6 flex flex-col items-center">
       <div className="w-full max-w-4xl">
         <h1 className="text-3xl md:text-4xl font-bold text-blue-800 mb-4 text-center">Solace Advocates</h1>
-        <div className="bg-white rounded-lg shadow p-6 mb-6 flex flex-col md:flex-row md:items-end gap-4">
+        <form className="bg-white rounded-lg shadow p-6 mb-6 flex flex-col md:flex-row md:items-end gap-4" aria-label="Advocate search form" role="search">
           <div className="flex-1">
             <label htmlFor="advocate-search" className="block text-sm font-medium text-gray-700 mb-1">
               Search for an advocate
@@ -92,19 +91,21 @@ export default function Home() {
               value={searchTerm}
               onChange={handleInputChange}
               autoComplete="off"
+              aria-label="Search for an advocate by name, city, degree, specialty, or experience"
             />
             {searchTerm && (
-              <p className="text-xs text-gray-500 mt-1">Searching for: <span className="font-semibold">{searchTerm}</span></p>
+              <p className="text-xs text-gray-500 mt-1" aria-live="polite">Searching for: <span className="font-semibold">{searchTerm}</span></p>
             )}
           </div>
           <button
             onClick={handleReset}
-            className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition self-center"
             type="button"
+            aria-label="Reset search and show all advocates"
           >
             Reset Search
           </button>
-        </div>
+        </form>
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -117,7 +118,12 @@ export default function Home() {
           <div className="text-red-600 font-semibold py-8 text-center">{error}</div>
         ) : (
           <div className="overflow-x-auto rounded-lg shadow">
-            <table className="min-w-full bg-white divide-y divide-gray-200">
+            <table
+              className="min-w-full bg-white divide-y divide-gray-200"
+              aria-label="List of Solace Advocates"
+              role="table"
+            >
+              <caption className="sr-only">Advocates matching your search</caption>
               <thead className="bg-blue-100">
                 <tr>
                   <th scope="col" className="px-4 py-2 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">First Name</th>
@@ -132,7 +138,7 @@ export default function Home() {
               <tbody className="divide-y divide-gray-100">
                 {filteredAdvocates.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center text-gray-500 py-8">No advocates found. Try a different search.</td>
+                    <td colSpan={7} className="text-center text-gray-500 py-8" aria-live="polite">No advocates found. Try a different search.</td>
                   </tr>
                 ) : (
                   filteredAdvocates.map((advocate, idx) => (
